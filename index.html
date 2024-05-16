@@ -1,0 +1,140 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<title>Online Equation Editor</title>
+
+
+<script src="assets/js/jquery-3.4.0.min.js"></script>
+<script src="assets/js/scrolling.js"></script>
+<link rel="stylesheet" href="assets/css/style.css">
+<script type="module" src="assets/js/js.cookie.min.js"></script>
+<script src="assets/js/eqneditor.api.min.js"></script>
+<link rel="stylesheet" href="assets/css/eqneditor.css"/>
+
+<script>
+
+$(document).ready(function() {
+	mainOutput = new EqEditor.Output('output');
+	exportOutput = new EqEditor.Output('export_area','url');
+	EqEditor.TextArea.link('latexInput', true)
+		.addToolbar(new EqEditor.Toolbar('toolbar'), true)
+		.addOutput(mainOutput)
+		.addOutput(exportOutput)
+		.addHistoryMenu(new EqEditor.History('history'))
+		.insert("");
+
+	const interval = window.setInterval(function() {
+		// Get current slide
+		var $firstSlide = $('.featured_car').find('div:first');
+		var width = $firstSlide.width();
+		
+		// Move current slide out and next slide in
+		$firstSlide.animate({marginLeft: -width}, 1000, function() {
+			var $lastSlide = $('.featured_car').find('div:last');
+      		$lastSlide.after($firstSlide);
+			$firstSlide.css({marginLeft: 0})
+		});
+	}, 4000);
+
+	$("#export_options select").each(function() {
+		var a=Cookies.get(this.id);
+
+		if(a!==undefined) $(this).val(a).change();
+
+		$(this).change(function() { Cookies.set(this.id, $(this).val()); })
+	})
+
+
+	// Remove all to start
+	$(".trusted_car > div").hide();
+
+	// Show initial slide
+	var $firstSlide = $('.trusted_car').find('div:first');
+	$firstSlide.fadeIn(500);
+	const interval2 = setInterval(function() {
+		// Fade out current image and move to back of queue
+		var $lastSlide = $('.trusted_car').find('div:last');
+		$firstSlide.fadeOut(500);
+		$lastSlide.after($firstSlide);
+		
+		// Fade in next image
+		$firstSlide = $('.trusted_car').find('div:first');
+		$firstSlide.fadeIn(500);
+	}, 5000);
+
+});
+</script>
+
+</head>
+<body class="light">
+
+<script>
+$(document).ready(function() {
+	// This should select the active navigation tag
+    $.each($('#nav-toggle').find('div'), function() {
+        $(this).toggleClass('active', 
+            window.location.pathname.indexOf($(this).find('a').attr('href')) > -1);
+    }); 
+});
+</script>
+			
+
+
+<div>
+    <div id="equation-editor">
+        <div id="history"></div>
+        <div id="toolbar"></div>
+        <div id="latexInput" placeholder="Write Equation here..."></div>
+
+        <div id="equation-output">
+            <img id="output" alt="equation" src="data:image/gif;base64,R0lGODlhAQABAIAAAP///wAAACH5BAEAAAAALAAAAAABAAEAAAICRAEAOw==">
+        </div>
+        <div id="export_options">
+            <div>
+                <button id="downloadBtn" onClick="mainOutput.download();">Download</button>
+            </div>
+            <div>
+                <select id="format" onchange="mainOutput.setFormat(this.value); exportOutput.setFormat(this.value);" title="Select the output format">
+                    <option value="svg" selected>svg</option>
+                    <option value="gif">gif</option>
+                    <option value="png">png</option>
+                    <option value="pdf">pdf</option>
+                    <option value="emf">emf</option>
+                </select>
+                <select id="fontsize" onchange="mainOutput.setFontSize(this.value); exportOutput.setFontSize(this.value);" title="Select font size">
+                    <option value="tiny">5 pt</option>
+                    <option value="small">9 pt</option>
+                    <option value="" selected>10 pt</option>
+                    <option value="large">12 pt</option>
+                    <option value="LARGE">18 pt</option>
+                    <option value="huge">20 pt</option>
+                </select>
+                <select id="dpi" onchange="mainOutput.setDpi(this.value); exportOutput.setDpi(this.value);" title="Select the output resolution">
+                    <option value="50">50</option>
+                    <option value="80">80</option>
+                    <option value="100">100</option>
+                    <option value="110" selected>110</option>
+                    <option value="120">120</option>
+                    <option value="150">150</option>
+                    <option value="200">200</option>
+                    <option value="300">300</option>
+                </select>
+                <select id="bg" onchange="mainOutput.setBackground(this.value);exportOutput.setBackground(this.value);" title="Background color">
+                    <option value="">Transparent</option>
+                    <option value="white">White</option>
+                    <option value="black">Black</option>
+                    <option value="red">Red</option>
+                    <option value="green">Green</option>
+                    <option value="blue">Blue</option>
+                </select>
+                <select id="compressed" onchange="mainOutput.setInline(this.value);exportOutput.setInline(this.value)" title="Compression">
+                    <option value="true">Inline</option>
+                    <option value="false" selected>Block</option>
+                </select>
+            </div>
+        </div>
+    </div>
+</div>
+
+</body>
+</html>
